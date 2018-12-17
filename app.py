@@ -36,5 +36,7 @@ admin.add_view(ModelView(Project, db.session))
 
 admin.add_view(ModelView(Procpect, db.session))
 
-admin.add_view(ModelView(Remarque, db.session))
+admin.add_view(ModelView(Note, db.session))
+
+admin.add_view(ModelView(procpect_project, db.session))
 
