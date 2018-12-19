@@ -1,9 +1,12 @@
-from flask import Flask
+from flask import Flask, session, redirect, url_for, request, render_template
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import os
+
+
+from forms import UserForm
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -15,29 +18,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 admin = Admin(app)
-
-from model import *
-
-
-class ProspectModelView(ModelView):
-    inline_models = (Note,)
-    column_filters = ('name', 'phone','email')
-    form_excluded_columns = ['projects']
+from modelView import *
 
 
-class NoteModelView(ModelView):
-    form_excluded_columns = ['prospect']
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    form = UserForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            us = User.query.filter_by(username=form.username.data).first()
+            session['user'] = us.username
+            return redirect(url_for('admin.index'))
+    return render_template('login.html', form=form)
 
 
-class ProjectModelView(ModelView):
-    form_excluded_columns = ['prospects']
-
-
-class ProspectProjectModelView(ModelView):
-    column_filters = ('status', 'prospect.name','project.title','date')
-
-
-admin.add_view(ModelView(User, db.session))
+admin.add_view(AdminView(User, db.session))
 
 admin.add_view(ProjectModelView(Project, db.session))
 

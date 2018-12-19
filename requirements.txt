@@ -1,0 +1,7 @@
+flask
+flask-admin
+flask-migrate
+flask-sqlalchemy
+FlaskForm
+wtforms
+flask_wtf

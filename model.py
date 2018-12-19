@@ -8,7 +8,7 @@ from datetime import datetime
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String)
+    username = db.Column(db.String)
     password = db.Column(db.String)
 
 
