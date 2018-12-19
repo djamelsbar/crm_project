@@ -1,11 +1,11 @@
-from flask import Flask, session, redirect, url_for, request, render_template
+
+from flask import Flask, session, redirect, url_for, request, render_template, flash
 from flask_admin import Admin
+from flask_admin.contrib import rediscli
 from flask_admin.contrib.sqla import ModelView, filters
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 import os
-
-
 from forms import UserForm
 
 
@@ -30,6 +30,16 @@ def login():
             session['user'] = us.username
             return redirect(url_for('admin.index'))
     return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    if 'user' in session:
+        session.pop('user')
+
+        flash('We hope to see you again!')
+
+    return redirect(url_for('login'))
 
 
 admin.add_view(AdminView(User, db.session))

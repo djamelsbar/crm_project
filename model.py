@@ -1,7 +1,5 @@
 import enum
-
 from sqlalchemy.orm import relationship
-
 from app import db
 from datetime import datetime
 
@@ -31,7 +29,7 @@ class ProspectProject(db.Model):
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String, nullable=False)
+    title = db.Column(db.String, nullable=False, unique=True)
     description = db.Column(db.String, nullable=False)
     wilaya = db.Column(db.String)
     city = db.Column(db.String)
@@ -44,8 +42,8 @@ class Prospect(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String)
-    phone = db.Column(db.Integer, nullable=False)
-    email = db.Column(db.String)
+    phone = db.Column(db.String(15), unique=True, nullable=False)
+    email = db.Column(db.String, unique=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     projects = relationship('ProspectProject', back_populates='prospect')
     notes = db.relationship('Note', backref='prospect', lazy=True)

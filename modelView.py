@@ -1,6 +1,6 @@
+import wtf as wtf
 from flask import url_for,redirect,request,session
-from flask_admin.contrib.sqla import ModelView, filters
-
+from flask_admin.contrib.sqla import ModelView
 from model import *
 
 
@@ -31,6 +31,7 @@ class NoteModelView(ModelView):
 
 class ProjectModelView(AdminView):
     form_excluded_columns = ['prospects']
+    # form_overrides = dict(name=wtf.FileField)
 
 
 class ProspectProjectModelView(ModelView):
