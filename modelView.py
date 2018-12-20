@@ -4,6 +4,7 @@ from flask_admin.contrib.sqla import ModelView
 from model import *
 
 
+
 class AdminView(ModelView):
 
     def __init__(self, *args, **kwargs):
@@ -11,7 +12,7 @@ class AdminView(ModelView):
         self.static_folder = 'static'
 
     def is_accessible(self):
-        return session.get('user') == 'Administrator'
+        return session.get('user') == 'admin'
 
     def inaccessible_callback(self, name, **kwargs):
         if not self.is_accessible():
@@ -19,21 +20,30 @@ class AdminView(ModelView):
 
 
 class ProspectModelView(ModelView):
-    # adm =AdminView(Project, db.session)
-    inline_models = (Note,)
-    column_filters = ('name', 'phone','email')
+    inline_models = (Note, ProspectProject)
+    column_filters = ('name', 'phone','email','date')
+    column_searchable_list = ('name', 'phone','email','last_name')
     form_excluded_columns = ['projects']
 
 
 class NoteModelView(ModelView):
     form_excluded_columns = ['prospect']
+    can_create = False
+    can_edit = False
+    can_delete = False
+    column_filters = ('description', 'date', 'prospect.id')
+    column_searchable_list = ('description', 'prospect.id')
 
 
 class ProjectModelView(AdminView):
     form_excluded_columns = ['prospects']
-    # form_overrides = dict(name=wtf.FileField)
 
 
 class ProspectProjectModelView(ModelView):
     column_filters = ('status', 'prospect.name','project.title','date')
+    can_create = False
+    can_edit = False
+    can_delete = False
+    column_searchable_list = ('status', 'prospect.name', 'project.title')
+
 

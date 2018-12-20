@@ -32,7 +32,7 @@ def login():
     return render_template('login.html', form=form)
 
 
-@app.route('/logout')
+@app.route('/logout/')
 def logout():
     if 'user' in session:
         session.pop('user')

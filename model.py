@@ -1,4 +1,6 @@
 import enum
+
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 from app import db
 from datetime import datetime
@@ -18,13 +20,15 @@ class StatusType(enum.Enum):
 
 
 class ProspectProject(db.Model):
-
-    procpect_id = db.Column(db.Integer, db.ForeignKey('prospect.id'), primary_key=True)
-    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    procpect_id = db.Column(db.Integer, db.ForeignKey('prospect.id'))
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     status = db.Column('status_type', db.Enum(StatusType))
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     prospect = relationship('Prospect', back_populates='projects')
     project = relationship('Project', back_populates='prospects')
+
+    __table_args__ = (db.UniqueConstraint('procpect_id','project_id',name='unique_constraint_prjctid_prcpctid'),)
 
 
 class Project(db.Model):
@@ -54,7 +58,7 @@ class Prospect(db.Model):
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String, nullable=False)
+    description = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     prospect_id = db.Column(db.Integer, db.ForeignKey('prospect.id'), nullable=False)
 
